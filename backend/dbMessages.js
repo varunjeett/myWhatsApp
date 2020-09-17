@@ -7,4 +7,4 @@ const whatsappSchema=mongoose.Schema({
     received:Boolean
 });
 
-export default mongoose.model('messagecontent',whatsappSchema);c
+module.exports=mongoose.model('messagecontent',whatsappSchema);
