@@ -35,7 +35,7 @@ function Chatwindow({ messages }) {
 
         {/* middle info */}
         <div className="chatwindowheader__info">
-          <h4>Prabjot</h4>
+          <h4>Abhijeet's Whatsapp</h4>
           <p>Last Seen At {new Date().toUTCString()} </p>
         </div>
 
