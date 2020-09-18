@@ -2,24 +2,32 @@ import express from "express";
 import mongoose from "mongoose";
 import Messages from "./dbMessages.js";
 import Pusher from "pusher";
+import cors  from 'cors';
 
 //setting port and app instances
-
-// mongoose.Promise=global.Promise;
-
 const app = express();
 const port = process.env.PORT || 9000;
 
 const pusher = new Pusher({
-  appId: "1074767",
-  key: "9ccebb4fbd757823ba95",
-  secret: "e6a00444dcb3f4b8c418",
-  cluster: "ap2",
-  useTLS: true,
+  appId: '1075140',
+  key: '5cc4966bdf755a32c0f6',
+  secret: '7ab50aec6a8ee8d9227c',
+  cluster: 'ap2',
+  useTLS: true
 });
 
 //middleware, to convert json to normal data
 app.use(express.json());
+
+// app.use((req,res,next) => {
+//   res.setHeader("Access-Control-Allow-Origin","*");
+//   res.setHeader("Access-Control-Allow-Headers","*");
+//   next();
+// });
+
+// or 
+app.use(cors());
+
 
 //DB config
 const connection_url =
@@ -29,24 +37,35 @@ mongoose
     useCreateIndex: true,
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    // promiseLibrary: global.Promise
   })
   .then(() => console.log("Database Connected at config"))
   .catch((err) => console.log(err));
 
 const db = mongoose.connection;
-db.once('open', (open) => {
+
+db.once("open", () => {
   console.log("finallly connected");
 
-  // const msg = mongoose.Collection("messagecontents")
-  //   .then(() => console.log("Database Connected "))
-  //   .catch((err) => console.log(err));
+  const msg = db.collection("messagecontents");
+  const changeStream = msg.watch();
 
-  // const changeStream = msg.watch();
-  // changeStream.on("change", (change) => {
-  //   console.log("Something was changed");
-  // });
-  // return (null,db);
+  changeStream.on( "change", (change) => {
+    console.log("Something was changed",change);
+
+    if(change.operationType=== 'insert') {
+      const msgdetails = change.fullDocument;
+      pusher.trigger("messages","inserted", {
+        name:msgdetails.name,
+        message:msgdetails.message,
+        timestamp:msgdetails.timestamp,
+        received:msgdetails.received
+      });
+    }
+    else {
+      console.log("errror in trigerring pusher");
+    }
+
+  });
 });
 
 //api routes
