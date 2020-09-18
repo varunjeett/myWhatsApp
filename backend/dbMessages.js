@@ -1,4 +1,4 @@
-const mongoose=require('mongoose');
+import mongoose from 'mongoose';
 
 const whatsappSchema=mongoose.Schema({
     message:String,
@@ -7,4 +7,5 @@ const whatsappSchema=mongoose.Schema({
     received:Boolean
 });
 
-module.exports=mongoose.model('messagecontent',whatsappSchema);
+//collection of messages
+export default mongoose.model("messagecontents",whatsappSchema);
