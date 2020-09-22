@@ -6,8 +6,10 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { Avatar, IconButton } from '@material-ui/core';
 import { SearchOutlined } from '@material-ui/icons';
 import SidebarChat from './SidebarChat';
+import { useStateValue } from './StateProvider';
 
 function Sidebar() {
+    const [{user},dispatch]=useStateValue();
     return (
         // side bar is the whole left section
         <div className="sidebar">
@@ -16,7 +18,7 @@ function Sidebar() {
             <div className="sidebar__header">
 
                 {/* Avatar is also used by github  as we can see in the link*/}
-                <Avatar src="https://avatars1.githubusercontent.com/u/47029938?s=460&u=23917ce2d2709c132b0608fc3d3143c9b903dd08&v=4" />
+                <Avatar src={user?.photoURL}/>
 
 
                 {/* sidebar__header__right -> represents the right box consisting of 3 icons */}
